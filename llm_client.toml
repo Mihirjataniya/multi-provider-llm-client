@@ -1,0 +1,40 @@
+# llm-client settings. Safe to commit: no secrets here.
+# Keys come from the env vars named in api_key_env.
+
+# Fallback order. First entry is the primary.
+order = ["groq", "gemini"]
+
+[defaults]
+max_tokens = 1024
+temperature = 0.7
+timeout_s = 30
+
+[retry]
+max_attempts = 3         # per provider, first try included
+base_delay_s = 0.5       # backoff: random(0, base * 2^attempt), full jitter
+max_delay_s = 8
+max_retry_after_s = 20   # provider asks for a longer wait → fall back instead
+
+[circuit_breaker]
+failure_threshold = 5    # consecutive unhealthy calls → stop trying this provider
+cooldown_s = 30          # then let one test call through (half-open)
+
+[providers.groq]
+api_key_env = "GROQ_API_KEY"
+model = "qwen/qwen3.8-27b"
+reasoning_effort = "none"     # thinking off: max_tokens goes to the answer
+
+[providers.gemini]
+api_key_env = "GEMINI_API_KEY"
+model = "gemini-3.8-flash"
+thinking_level = "low"         # MINIMAL → 400 on gemini-3.8-flash
+
+# USD per 1M tokens. Check provider pricing pages; these change.
+# qwen3.8-27b is a Groq preview model.
+[prices."qwen/qwen3.8-27b"]
+input = 0.80
+output = 4.00
+
+[prices."gemini-3.8-flash"]
+input = 0.75             # promo price, doubles 2027-01-01
+output = 3.75
