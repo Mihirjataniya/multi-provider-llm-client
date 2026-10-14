@@ -1,0 +1,29 @@
+[project]
+name = "llm-client"
+version = "0.1.0"
+description = "Async multi-provider LLM client: retries, fallback, circuit breaker, streaming, structured output, cost logging."
+readme = "README.md"
+license = "MIT"
+authors = [
+    { name = "Mihir Jataniya", email = "mihirjataniya1612@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "google-genai>=2.29.0",
+    "groq>=1.7.0",
+    "pydantic>=2.14.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.12.9,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-asyncio>=1.4.0",
+    "python-dotenv>=1.2.4",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
